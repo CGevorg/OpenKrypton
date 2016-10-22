@@ -1,0 +1,2 @@
+# OpenKrypton
+Pattern recognition application
