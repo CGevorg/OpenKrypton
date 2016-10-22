@@ -20,5 +20,7 @@ public class MorphologyTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
     }
 }

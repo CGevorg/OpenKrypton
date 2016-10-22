@@ -1,15 +1,14 @@
 package com.krypton.app;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 
-/**
- * Created by employee on 10/22/16.
- */
 public class Morphology extends JFrame{
     private JRadioButton erodeRbtn = new JRadioButton("Erode");
     private JRadioButton dilateRbtn = new JRadioButton("Dilate");
@@ -34,22 +33,67 @@ public class Morphology extends JFrame{
     }
 
     private void initTop() {
+        this.initTopPanel();
         this.initTopLeft();
         this.initTopRight();
+    }
+
+    private void initTopPanel() {
+        topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.X_AXIS));
     }
 
     private void initTopLeft() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
         panel.add(new JLabel("Operation:"));
+        panel.add(Box.createVerticalStrut(20));
         panel.add(new JLabel("Kernel size:"));
+        panel.add(Box.createVerticalStrut(20));
         panel.add(new JLabel("Shape:"));
 
-
-
-
+        topPanel.add(panel);
     }
 
     private void initTopRight() {
+        ButtonGroup group = new ButtonGroup();
+        group.add(erodeRbtn);
+        group.add(dilateRbtn);
+        group.add(openRbtn);
+        group.add(closeRbtn);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(erodeRbtn);
+        panel.add(dilateRbtn);
+        panel.add(openRbtn);
+        panel.add(closeRbtn);
+
+        ButtonGroup g = new ButtonGroup();
+        g.add(rectangleRbtn);
+        g.add(ellipseRbtn);
+        g.add(closeRbtn);
+        JPanel p = new JPanel();
+        p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
+        p.add(rectangleRbtn);
+        p.add(ellipseRbtn);
+        p.add(closeRbtn);
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.add(panel);
+        rightPanel.add(Box.createHorizontalStrut(20));
+        rightPanel.add(sizeSlider);
+        rightPanel.add(Box.createHorizontalStrut(20));
+        rightPanel.add(p);
+        topPanel.add(rightPanel);
+        System.out.print("AAA");
     }
 }
+
+
+
+
+
+
+
+
+
