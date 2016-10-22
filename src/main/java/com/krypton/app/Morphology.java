@@ -85,7 +85,6 @@ public class Morphology extends JFrame{
         rightPanel.add(Box.createHorizontalStrut(20));
         rightPanel.add(p);
         topPanel.add(rightPanel);
-        System.out.print("AAA");
     }
 }
 
