@@ -26,6 +26,20 @@ public class Morphology extends JFrame{
 
     private void init() {
         this.initGui();
+        this.initComp();
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void initComp() {
+        sizeSlider.setOrientation(JSlider.HORIZONTAL);
+        sizeSlider.setMinimum(0);
+        sizeSlider.setMaximum(20);
+        sizeSlider.setValue(0);
+        sizeSlider.setPaintTrack(true);
+        sizeSlider.setSnapToTicks(true);
+        sizeSlider.setPaintLabels(true);
+        sizeSlider.setMinorTickSpacing(0);
+        sizeSlider.setMajorTickSpacing(5);
     }
 
     private void initGui() {
@@ -40,6 +54,7 @@ public class Morphology extends JFrame{
 
     private void initTopPanel() {
         topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.X_AXIS));
+        this.add(topPanel);
     }
 
     private void initTopLeft() {
@@ -80,9 +95,9 @@ public class Morphology extends JFrame{
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
         rightPanel.add(panel);
-        rightPanel.add(Box.createHorizontalStrut(20));
+        rightPanel.add(Box.createVerticalStrut(5));
         rightPanel.add(sizeSlider);
-        rightPanel.add(Box.createHorizontalStrut(20));
+        rightPanel.add(Box.createVerticalStrut(5));
         rightPanel.add(p);
         topPanel.add(rightPanel);
     }
