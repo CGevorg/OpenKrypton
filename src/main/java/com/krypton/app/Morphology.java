@@ -90,7 +90,7 @@ public class Morphology extends JFrame{
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.add(rectangleRbtn);
         p.add(ellipseRbtn);
-        p.add(closeRbtn);
+        p.add(crossRbtn);
 
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
