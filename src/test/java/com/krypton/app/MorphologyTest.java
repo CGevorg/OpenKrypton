@@ -14,13 +14,11 @@ public class MorphologyTest {
         m.setSize(new Dimension(400,300));
         m.setMinimumSize(new Dimension(400,300));
         m.setVisible(true);
-
+        m.openPicture("/home/employee/workspace/DIP/OpenKrypton/resources/monkey.jpg");
         try {
             Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 }
