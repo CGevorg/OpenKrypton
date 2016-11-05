@@ -26,6 +26,8 @@ public class Morphology extends JFrame {
     private JRadioButton dilateRbtn = new JRadioButton("Dilate");
     private JRadioButton openRbtn = new JRadioButton("Open");
     private JRadioButton closeRbtn = new JRadioButton("Close");
+    private JRadioButton HITMISSRbtn = new JRadioButton("HITMISS");
+
     private JSlider sizeSlider = new JSlider();
     private JRadioButton rectangleRbtn = new JRadioButton("Rectangle");
     private JRadioButton ellipseRbtn = new JRadioButton("Ellipse");
@@ -104,21 +106,20 @@ public class Morphology extends JFrame {
         sizeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 Mat m = null;
-                if(erodeRbtn.isSelected())
-                {
+                if(erodeRbtn.isSelected()) {
                     m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
                 }
-                if(dilateRbtn.isSelected())
-                {
+                if(dilateRbtn.isSelected()) {
                     m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
                 }
-                if(openRbtn.isSelected())
-                {
+                if(openRbtn.isSelected()) {
                     m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
                 }
-                if(crossRbtn.isSelected())
-                {
+                if(closeRbtn.isSelected()) {
                     m = processor.close(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
+                }
+                if(HITMISSRbtn.isSelected()) {
+                    m = processor.HITMISS(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
                 }
                 Image image = ImageProcessor.toBufferedImage(m);
                 imageLbl.setIcon(new ImageIcon(image));
@@ -166,12 +167,14 @@ public class Morphology extends JFrame {
         group.add(dilateRbtn);
         group.add(openRbtn);
         group.add(closeRbtn);
+        group.add(HITMISSRbtn);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(erodeRbtn);
         panel.add(dilateRbtn);
         panel.add(openRbtn);
         panel.add(closeRbtn);
+        panel.add(HITMISSRbtn);
 
         ButtonGroup g = new ButtonGroup();
         g.add(rectangleRbtn);

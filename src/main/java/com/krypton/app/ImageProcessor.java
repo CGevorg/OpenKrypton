@@ -9,9 +9,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-/**
- * Created by employee on 10/29/16.
- */
 public class ImageProcessor {
     static{ System.loadLibrary(Core.NATIVE_LIBRARY_NAME); }
 
@@ -41,6 +38,14 @@ public class ImageProcessor {
         Mat outputImage = new Mat();
         Mat element = getKernelFromShape(elementSize, elementShape);
         Imgproc.morphologyEx(input,outputImage, Imgproc.MORPH_CLOSE,
+                element);
+        return outputImage;
+    }
+
+    public Mat HITMISS(Mat input, int elementSize, int elementShape) {
+        Mat outputImage = new Mat();
+        Mat element = getKernelFromShape(5, 1);
+        Imgproc.morphologyEx(input,outputImage, Imgproc.MORPH_HITMISS,
                 element);
         return outputImage;
     }
