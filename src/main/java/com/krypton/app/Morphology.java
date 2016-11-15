@@ -1,27 +1,40 @@
 package com.krypton.app;
 
 
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import javax.swing.AbstractButton;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Morphology extends JFrame {
 
-    private enum Morph_Type {
-        ERODE,
-        DILATION,
-        OPEN,
-        CLOSE
-    }
+    private static Logger log = Logger.getLogger(Morphology.class.getName());
 
-    private final String IMAGE_PATH = "/home/employee/workspace/DIP/OpenKrypton/resources/monkey.jpg";
+    private String IMAGE_PATH = "/home/employee/workspace/DIP/OpenKrypton/resources/monkey.jpg";
+
+    private JButton openFileBtn = new JButton("Open New Image");
+    private JButton resetBtn = new JButton("Reset");
 
     private JRadioButton erodeRbtn = new JRadioButton("Erode");
     private JRadioButton dilateRbtn = new JRadioButton("Dilate");
@@ -104,7 +117,7 @@ public class Morphology extends JFrame {
             }
         });
 
-        rectangleRbtn.addActionListener(new ActionListener() {
+        ellipseRbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 getNewImage();
             }
@@ -118,7 +131,21 @@ public class Morphology extends JFrame {
 
         sizeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-               getNewImage();
+                getNewImage();
+            }
+        });
+
+        openFileBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fc = new JFileChooser(System.getProperty("user.dir") + File.separator + "resources");
+                int returnVal = fc.showOpenDialog(null);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    openPicture(file.getPath());
+                } else {
+                    log.log(Level.WARNING,"Cannot open file return code is " + returnVal);
+                }
             }
         });
     }
@@ -153,6 +180,10 @@ public class Morphology extends JFrame {
         panel.add(new JLabel("Kernel size:"));
         panel.add(Box.createVerticalStrut(20));
         panel.add(new JLabel("Shape:"));
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(openFileBtn);
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(resetBtn);
 
         topPanel.add(panel);
     }
@@ -194,14 +225,12 @@ public class Morphology extends JFrame {
         Enumeration<AbstractButton> elements = shapeGroup.getElements();
         while (elements.hasMoreElements()) {
             AbstractButton btn = elements.nextElement();
-            if(btn.isSelected()) {
-                if(btn == rectangleRbtn) {
+            if (btn.isSelected()) {
+                if (btn == rectangleRbtn) {
                     return Imgproc.MORPH_RECT;
-                }
-                else if(btn == ellipseRbtn) {
+                } else if (btn == ellipseRbtn) {
                     return Imgproc.MORPH_ELLIPSE;
-                }
-                else if(btn == crossRbtn) {
+                } else if (btn == crossRbtn) {
                     return Imgproc.MORPH_CROSS;
                 }
             }
@@ -215,18 +244,15 @@ public class Morphology extends JFrame {
         Enumeration<AbstractButton> elements = typeGroup.getElements();
         while (elements.hasMoreElements()) {
             AbstractButton btn = elements.nextElement();
-            if(btn.isSelected()) {
-                if(btn == erodeRbtn) {
-                    m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
-                }
-                else if(btn == dilateRbtn) {
-                    m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
-                }
-                else if(btn == openRbtn) {
-                    m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
-                }
-                else if(btn == closeRbtn) {
-                    m = processor.close(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
+            if (btn.isSelected()) {
+                if (btn == erodeRbtn) {
+                    m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                } else if (btn == dilateRbtn) {
+                    m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                } else if (btn == openRbtn) {
+                    m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                } else if (btn == closeRbtn) {
+                    m = processor.close(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
                 }
             }
         }
@@ -237,6 +263,7 @@ public class Morphology extends JFrame {
     public void openPicture(String filePath) {
         ImageIcon icon = new ImageIcon(filePath);
         imageLbl.setIcon(icon);
+        IMAGE_PATH = filePath;
     }
 }
 
