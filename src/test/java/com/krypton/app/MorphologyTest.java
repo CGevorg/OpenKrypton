@@ -8,7 +8,7 @@ import org.junit.Test;
  * Created by employee on 10/22/16.
  */
 public class MorphologyTest {
-    static final int SLEEP_DURATION= 70000;
+    static final int SLEEP_DURATION= 7000000;
     @Test
     public void UI() {
         Morphology m = new Morphology();
