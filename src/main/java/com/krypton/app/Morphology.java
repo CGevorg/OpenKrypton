@@ -4,23 +4,24 @@ package com.krypton.app;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSlider;
+import java.util.Enumeration;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 public class Morphology extends JFrame {
+
+    private enum Morph_Type {
+        ERODE,
+        DILATION,
+        OPEN,
+        CLOSE
+    }
+
     private final String IMAGE_PATH = "/home/employee/workspace/DIP/OpenKrypton/resources/monkey.jpg";
-    private final int ELEMENT_SHAPE = 0;
 
     private JRadioButton erodeRbtn = new JRadioButton("Erode");
     private JRadioButton dilateRbtn = new JRadioButton("Dilate");
@@ -36,6 +37,9 @@ public class Morphology extends JFrame {
     private JPanel topPanel = new JPanel();
     private JLabel imageLbl = new JLabel();
     private ImageProcessor processor = new ImageProcessor();
+
+    private ButtonGroup typeGroup = new ButtonGroup();
+    private ButtonGroup shapeGroup = new ButtonGroup();
 
     public Morphology() {
         this.init();
@@ -71,58 +75,50 @@ public class Morphology extends JFrame {
     private void initListeners() {
         erodeRbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Mat m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),ELEMENT_SHAPE);
-                Image image = ImageProcessor.toBufferedImage(m);
-                imageLbl.setIcon(new ImageIcon(image));
+                getNewImage();
             }
         });
 
         dilateRbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Mat m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),ELEMENT_SHAPE);
-                Image image = ImageProcessor.toBufferedImage(m);
-                imageLbl.setIcon(new ImageIcon(image));
+                getNewImage();
+
             }
         });
 
         openRbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Mat m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),ELEMENT_SHAPE);
-                Image image = ImageProcessor.toBufferedImage(m);
-                imageLbl.setIcon(new ImageIcon(image));
+                getNewImage();
+            }
+        });
+
+        closeRbtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getNewImage();
+            }
+        });
+
+        rectangleRbtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getNewImage();
+            }
+        });
+
+        rectangleRbtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                getNewImage();
             }
         });
 
         crossRbtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Mat m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),ELEMENT_SHAPE);
-                Image image = ImageProcessor.toBufferedImage(m);
-                imageLbl.setIcon(new ImageIcon(image));
+                getNewImage();
             }
         });
 
-
-
         sizeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                Mat m = null;
-                if(erodeRbtn.isSelected()) {
-                    m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
-                }
-                if(dilateRbtn.isSelected()) {
-                    m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
-                }
-                if(openRbtn.isSelected()) {
-                    m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
-                }
-                if(closeRbtn.isSelected()) {
-                    m = processor.close(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
-                }
-                if(HITMISSRbtn.isSelected()) {
-                    m = processor.HITMISS(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),0);
-                }
-                Image image = ImageProcessor.toBufferedImage(m);
-                imageLbl.setIcon(new ImageIcon(image));
+               getNewImage();
             }
         });
     }
@@ -162,12 +158,11 @@ public class Morphology extends JFrame {
     }
 
     private void initTopRight() {
-        ButtonGroup group = new ButtonGroup();
-        group.add(erodeRbtn);
-        group.add(dilateRbtn);
-        group.add(openRbtn);
-        group.add(closeRbtn);
-        group.add(HITMISSRbtn);
+        typeGroup.add(erodeRbtn);
+        typeGroup.add(dilateRbtn);
+        typeGroup.add(openRbtn);
+        typeGroup.add(closeRbtn);
+        typeGroup.add(HITMISSRbtn);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(erodeRbtn);
@@ -176,10 +171,9 @@ public class Morphology extends JFrame {
         panel.add(closeRbtn);
         panel.add(HITMISSRbtn);
 
-        ButtonGroup g = new ButtonGroup();
-        g.add(rectangleRbtn);
-        g.add(ellipseRbtn);
-        g.add(crossRbtn);
+        shapeGroup.add(rectangleRbtn);
+        shapeGroup.add(ellipseRbtn);
+        shapeGroup.add(crossRbtn);
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.add(rectangleRbtn);
@@ -194,6 +188,50 @@ public class Morphology extends JFrame {
         rightPanel.add(Box.createVerticalStrut(5));
         rightPanel.add(p);
         topPanel.add(rightPanel);
+    }
+
+    int getElementShape() {
+        Enumeration<AbstractButton> elements = shapeGroup.getElements();
+        while (elements.hasMoreElements()) {
+            AbstractButton btn = elements.nextElement();
+            if(btn.isSelected()) {
+                if(btn == rectangleRbtn) {
+                    return Imgproc.MORPH_RECT;
+                }
+                else if(btn == ellipseRbtn) {
+                    return Imgproc.MORPH_ELLIPSE;
+                }
+                else if(btn == crossRbtn) {
+                    return Imgproc.MORPH_CROSS;
+                }
+            }
+        }
+        return Imgproc.MORPH_RECT;
+    }
+
+    void getNewImage() {
+        Mat m = null;
+        int sh = getElementShape();
+        Enumeration<AbstractButton> elements = typeGroup.getElements();
+        while (elements.hasMoreElements()) {
+            AbstractButton btn = elements.nextElement();
+            if(btn.isSelected()) {
+                if(btn == erodeRbtn) {
+                    m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
+                }
+                else if(btn == dilateRbtn) {
+                    m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
+                }
+                else if(btn == openRbtn) {
+                    m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
+                }
+                else if(btn == closeRbtn) {
+                    m = processor.close(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(),sh);
+                }
+            }
+        }
+        Image image = ImageProcessor.toBufferedImage(m);
+        imageLbl.setIcon(new ImageIcon(image));
     }
 
     public void openPicture(String filePath) {

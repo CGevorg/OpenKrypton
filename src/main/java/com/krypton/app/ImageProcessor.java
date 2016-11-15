@@ -53,7 +53,7 @@ public class ImageProcessor {
     private Mat getKernelFromShape(int elementSize, int elementShape) {
         return Imgproc.getStructuringElement(elementShape, new
                 Size(elementSize*2+1, elementSize*2+1), new Point(elementSize,
-                elementSize) );
+                elementSize));
     }
 
     public static Image toBufferedImage(Mat matrix){
