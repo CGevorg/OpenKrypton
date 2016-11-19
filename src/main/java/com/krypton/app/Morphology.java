@@ -9,6 +9,7 @@ import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,6 +24,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.logging.Level;
@@ -40,8 +42,8 @@ public class Morphology extends JFrame {
     private JCheckBox immediatelyChk = new JCheckBox("Immediately change");
 
     private JRadioButton additionRbtn = new JRadioButton("Addition");
-    private JRadioButton subtractionRbtn = new JRadioButton("Subtraction");
-    private JRadioButton negationRbtn = new JRadioButton("Negation");
+    private JRadioButton boundaryExtractionRbtn = new JRadioButton("BoundaryExtraction");
+    private JRadioButton invertRbtn = new JRadioButton("Invert");
     private JRadioButton erodeRbtn = new JRadioButton("Erode");
     private JRadioButton dilateRbtn = new JRadioButton("Dilate");
     private JRadioButton openRbtn = new JRadioButton("Open");
@@ -59,6 +61,8 @@ public class Morphology extends JFrame {
 
     private ButtonGroup typeGroup = new ButtonGroup();
     private ButtonGroup shapeGroup = new ButtonGroup();
+
+    private Mat currentMat = null;
 
     public Morphology() {
         this.init();
@@ -84,7 +88,7 @@ public class Morphology extends JFrame {
         sizeSlider.setSnapToTicks(true);
         sizeSlider.setPaintLabels(true);
         sizeSlider.setMinorTickSpacing(0);
-        sizeSlider.setMajorTickSpacing(5);
+        sizeSlider.setMajorTickSpacing(1);
 
         this.erodeRbtn.setSelected(true);
         this.rectangleRbtn.setSelected(true);
@@ -92,9 +96,9 @@ public class Morphology extends JFrame {
     }
 
     private void initListeners() {
-       ActionListener listener =  new ActionListener() {
+        ActionListener listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(immediatelyChk.isSelected()) {
+                if (immediatelyChk.isSelected()) {
                     getNewImage();
                 }
             }
@@ -102,8 +106,8 @@ public class Morphology extends JFrame {
 
 
         additionRbtn.addActionListener(listener);
-        subtractionRbtn.addActionListener(listener);
-        negationRbtn.addActionListener(listener);
+        boundaryExtractionRbtn.addActionListener(listener);
+        invertRbtn.addActionListener(listener);
         erodeRbtn.addActionListener(listener);
         dilateRbtn.addActionListener(listener);
         openRbtn.addActionListener(listener);
@@ -113,7 +117,7 @@ public class Morphology extends JFrame {
         crossRbtn.addActionListener(listener);
         sizeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                if(immediatelyChk.isSelected()) {
+                if (immediatelyChk.isSelected()) {
                     getNewImage();
                 }
             }
@@ -128,7 +132,7 @@ public class Morphology extends JFrame {
                     File file = fc.getSelectedFile();
                     openPicture(file.getPath());
                 } else {
-                    log.log(Level.WARNING,"Cannot open file return code is " + returnVal);
+                    log.log(Level.WARNING, "Cannot open file return code is " + returnVal);
                 }
             }
         });
@@ -190,8 +194,8 @@ public class Morphology extends JFrame {
 
     private void initTopRight() {
         typeGroup.add(additionRbtn);
-        typeGroup.add(subtractionRbtn);
-        typeGroup.add(negationRbtn);
+        typeGroup.add(boundaryExtractionRbtn);
+        typeGroup.add(invertRbtn);
         typeGroup.add(erodeRbtn);
         typeGroup.add(dilateRbtn);
         typeGroup.add(openRbtn);
@@ -200,8 +204,8 @@ public class Morphology extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(additionRbtn);
-        panel.add(subtractionRbtn);
-        panel.add(negationRbtn);
+        panel.add(boundaryExtractionRbtn);
+        panel.add(invertRbtn);
         panel.add(erodeRbtn);
         panel.add(dilateRbtn);
         panel.add(openRbtn);
@@ -251,26 +255,24 @@ public class Morphology extends JFrame {
         while (elements.hasMoreElements()) {
             AbstractButton btn = elements.nextElement();
             if (btn.isSelected()) {
-                if(btn == additionRbtn) {
-                    m = processor.addition(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
-                }
-                else if(btn == subtractionRbtn) {
-                    m = processor.subtraction(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
-                }
-                else if(btn == negationRbtn) {
-                    m = processor.invert(Imgcodecs.imread(IMAGE_PATH));
-                }
-                else if (btn == erodeRbtn) {
-                    m = processor.erode(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                if (btn == additionRbtn) {
+                    m = processor.addition(currentMat, sizeSlider.getValue(), sh);
+                } else if (btn == boundaryExtractionRbtn) {
+                    m = processor.boundaryExtraction(currentMat, sizeSlider.getValue(), sh);
+                } else if (btn == invertRbtn) {
+                    m = processor.invert(currentMat);
+                } else if (btn == erodeRbtn) {
+                    m = processor.erode(currentMat, sizeSlider.getValue(), sh);
                 } else if (btn == dilateRbtn) {
-                    m = processor.dilate(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                    m = processor.dilate(currentMat, sizeSlider.getValue(), sh);
                 } else if (btn == openRbtn) {
-                    m = processor.open(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                    m = processor.open(currentMat, sizeSlider.getValue(), sh);
                 } else if (btn == closeRbtn) {
-                    m = processor.close(Imgcodecs.imread(IMAGE_PATH), sizeSlider.getValue(), sh);
+                    m = processor.close(currentMat, sizeSlider.getValue(), sh);
                 }
             }
         }
+        currentMat = m;
         Image image = ImageProcessor.toBufferedImage(m);
         imageLbl.setIcon(new ImageIcon(image));
     }
@@ -279,6 +281,7 @@ public class Morphology extends JFrame {
         ImageIcon icon = new ImageIcon(filePath);
         imageLbl.setIcon(icon);
         IMAGE_PATH = filePath;
+        currentMat = Imgcodecs.imread(IMAGE_PATH);
     }
 }
 

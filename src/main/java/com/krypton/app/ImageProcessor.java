@@ -1,55 +1,63 @@
 package com.krypton.app;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-public class ImageProcessor {
-    static{ System.loadLibrary(Core.NATIVE_LIBRARY_NAME); }
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 
-    public Mat addition(Mat input, int elementSize, int elementShape) {
-        Mat outputImage = new Mat();
-        Mat element = getKernelFromShape(elementSize, elementShape);
-        Core.add(input,element,outputImage);
-        return outputImage;
+public class ImageProcessor {
+    static {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-    public Mat subtraction(Mat input, int elementSize, int elementShape) {
-        Mat outputImage = new Mat();
-        Mat element = getKernelFromShape(elementSize, elementShape);
-        Core.subtract(input,element,outputImage);
+    public Mat addition(Mat input, int elementSize, int elementShape) {
+        Mat outputImage = new Mat(input.rows(),input.cols(),CvType.CV_8UC1);
+
+        //@TODO
+        /*Mat m = dilate(input,elementSize,elementShape);
+        Core.add(input, m, outputImage);
+        */return outputImage;
+    }
+
+    public Mat boundaryExtraction(Mat input, int elementSize, int elementShape) {
+        Mat outputImage = new Mat(input.rows(),input.cols(),CvType.CV_8UC1);
+        Mat m = dilate(input,elementSize,elementShape);
+        Core.subtract(m, input, outputImage);
         return outputImage;
     }
 
     public Mat invert(Mat input) {
         Mat outputImage = new Mat();
-        Core.invert(input,outputImage);
+        Mat invertColorMatrix = new Mat(input.rows(), input.cols(), input.type(), new Scalar(255, 255, 255));
+        Core.subtract(invertColorMatrix, input, outputImage);
         return outputImage;
     }
 
-    public Mat erode(Mat input, int elementSize, int elementShape){
+    public Mat erode(Mat input, int elementSize, int elementShape) {
         Mat outputImage = new Mat();
         Mat element = getKernelFromShape(elementSize, elementShape);
-        Imgproc.erode(input,outputImage, element);
+        Imgproc.erode(input, outputImage, element);
         return outputImage;
     }
 
     public Mat dilate(Mat input, int elementSize, int elementShape) {
         Mat outputImage = new Mat();
         Mat element = getKernelFromShape(elementSize, elementShape);
-        Imgproc.dilate(input,outputImage, element);
+        Imgproc.dilate(input, outputImage, element);
         return outputImage;
     }
 
     public Mat open(Mat input, int elementSize, int elementShape) {
         Mat outputImage = new Mat();
         Mat element = getKernelFromShape(elementSize, elementShape);
-        Imgproc.morphologyEx(input,outputImage, Imgproc.MORPH_OPEN,
+        Imgproc.morphologyEx(input, outputImage, Imgproc.MORPH_OPEN,
                 element);
         return outputImage;
     }
@@ -57,7 +65,7 @@ public class ImageProcessor {
     public Mat close(Mat input, int elementSize, int elementShape) {
         Mat outputImage = new Mat();
         Mat element = getKernelFromShape(elementSize, elementShape);
-        Imgproc.morphologyEx(input,outputImage, Imgproc.MORPH_CLOSE,
+        Imgproc.morphologyEx(input, outputImage, Imgproc.MORPH_CLOSE,
                 element);
         return outputImage;
     }
@@ -65,14 +73,14 @@ public class ImageProcessor {
     public Mat HITMISS(Mat input, int elementSize, int elementShape) {
         Mat outputImage = new Mat();
         Mat element = getKernelFromShape(5, 1);
-        Imgproc.morphologyEx(input,outputImage, Imgproc.MORPH_HITMISS,
+        Imgproc.morphologyEx(input, outputImage, Imgproc.MORPH_HITMISS,
                 element);
         return outputImage;
     }
 
     private Mat getKernelFromShape(int elementSize, int elementShape) {
         return Imgproc.getStructuringElement(elementShape, new
-                Size(elementSize*2+1, elementSize*2+1), new Point(elementSize,
+                Size(elementSize * 2 + 1, elementSize * 2 + 1), new Point(elementSize,
                 elementSize));
     }
 
@@ -90,5 +98,12 @@ public class ImageProcessor {
                 getDataBuffer()).getData();
         System.arraycopy(buffer, 0, targetPixels, 0, buffer.length);
         return image;
+    }
+
+    public static Mat bufferedImageToMat(BufferedImage in) {
+        byte[] data = ((DataBufferByte) in.getRaster().getDataBuffer()).getData();
+        Mat mat = new Mat(in.getHeight(), in.getWidth(), CvType.CV_8UC3);
+        mat.put(0, 0, data);
+        return mat;
     }
 }
