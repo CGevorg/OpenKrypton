@@ -9,7 +9,6 @@ import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -24,7 +23,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.logging.Level;
@@ -34,7 +32,7 @@ public class Morphology extends JFrame {
 
     private static Logger log = Logger.getLogger(Morphology.class.getName());
 
-    private String IMAGE_PATH = "/home/employee/workspace/DIP/OpenKrypton/resources/monkey.jpg";
+    public static String IMAGE_PATH = "/home/employee/workspace/DIP/OpenKrypton/resources/apple.jpg";
 
     private JButton openFileBtn = new JButton("Open New Image");
     private JButton changeBtn = new JButton("Change");

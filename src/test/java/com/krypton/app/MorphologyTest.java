@@ -15,7 +15,7 @@ public class MorphologyTest {
         m.setSize(new Dimension(400,300));
         m.setMinimumSize(new Dimension(400,300));
         m.setVisible(true);
-        m.openPicture("/home/employee/workspace/DIP/OpenKrypton/resources/monkey.jpg");
+        m.openPicture(Morphology.IMAGE_PATH);
         try {
             Thread.sleep(SLEEP_DURATION);
         } catch (InterruptedException e) {
