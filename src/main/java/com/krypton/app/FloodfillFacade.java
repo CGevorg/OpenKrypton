@@ -2,22 +2,19 @@ package com.krypton.app;
 
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import javax.swing.ButtonGroup;
@@ -56,7 +53,6 @@ public class FloodfillFacade extends Application {
         vBox.setSpacing(10);
 
         this.init(vBox);
-        this.initStyleSheet();
 
         root.getChildren().add(vBox);
         Scene scene = new Scene(root, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
@@ -66,16 +62,25 @@ public class FloodfillFacade extends Application {
     }
 
     public void init(VBox panel) {
+        this.initLayouts(panel);
+        this.initComponents();
+        this.initStyleSheet();
+    }
+
+    public void initLayouts(VBox panel) {
+
         HBox modeBox = new HBox(DEFAULT_HBOX_SPACING);
         modeBox.setAlignment(Pos.CENTER_RIGHT);
         modeBox.setPadding(new Insets(0, 100, 0, 50));
         Label modeLbl = new Label("Mode:");
+        modeLbl.setFont(Font.font("Verdana", FontWeight.BOLD, modeLbl.getFont().getSize()));
         modeBox.getChildren().addAll(modeLbl,modeColorRbtn,modeGrayscaleRbtn);
 
         HBox maskBox = new HBox(DEFAULT_HBOX_SPACING);
         maskBox.setAlignment(Pos.CENTER_RIGHT);
         maskBox.setPadding(new Insets(0, 100, 0, 50));
         Label maskLbl = new Label("Mask:");
+        maskLbl.setFont(Font.font("Verdana", FontWeight.BOLD, maskLbl.getFont().getSize()));
         maskBox.getChildren().addAll(maskLbl,maskOnRbtn,maskOffRbtn);
 
 
@@ -83,29 +88,52 @@ public class FloodfillFacade extends Application {
         rangeBox.setAlignment(Pos.CENTER_RIGHT);
         rangeBox.setPadding(new Insets(0, 100, 0, 50));
         Label rangeLbl = new Label("Range:");
+        rangeLbl.setFont(Font.font("Verdana", FontWeight.BOLD, rangeLbl.getFont().getSize()));
         rangeBox.getChildren().addAll(rangeLbl,rangeNullRbtn,rangeFixedRbtn,rangeFloatingRbtn);
 
         HBox connectivityBox = new HBox(DEFAULT_HBOX_SPACING);
         connectivityBox.setAlignment(Pos.CENTER_RIGHT);
         connectivityBox.setPadding(new Insets(0, 100, 0, 50));
         Label connectivityLbl = new Label("Connectivity:");
+        connectivityLbl.setFont(Font.font("Verdana", FontWeight.BOLD, connectivityLbl.getFont().getSize()));
         connectivityBox.getChildren().addAll(connectivityLbl,connectivity4Rbtn,connectivity8Rbtn);
 
         HBox lowerThBox = new HBox(DEFAULT_HBOX_SPACING);
         lowerThBox.setAlignment(Pos.CENTER_RIGHT);
         lowerThBox.setPadding(new Insets(0, 100, 0, 50));
         Label lowerThLbl = new Label("Lower threshold:");
+        lowerThLbl.setFont(Font.font("Verdana", FontWeight.BOLD, lowerThLbl.getFont().getSize()));
         lowerThBox.getChildren().addAll(lowerThLbl,lowerThSlider);
 
         HBox upperThBox = new HBox(DEFAULT_HBOX_SPACING);
         upperThBox.setAlignment(Pos.CENTER_RIGHT);
         upperThBox.setPadding(new Insets(0, 100, 0, 50));
         Label upperThLbl = new Label("Upper threshold:");
+        upperThLbl.setFont(Font.font("Verdana", FontWeight.BOLD, upperThLbl.getFont().getSize()));
         upperThBox.getChildren().addAll(upperThLbl,upperThSlider);
 
 
         panel.getChildren().addAll(modeBox,maskBox,rangeBox,connectivityBox,lowerThBox,upperThBox);
 
+    }
+
+    private void initComponents() {
+        ToggleGroup modeGroup = new ToggleGroup();
+        modeColorRbtn.setToggleGroup(modeGroup);
+        modeGrayscaleRbtn.setToggleGroup(modeGroup);
+
+        ToggleGroup maskGroup = new ToggleGroup();
+        maskOnRbtn.setToggleGroup(maskGroup);
+        maskOffRbtn.setToggleGroup(maskGroup);
+
+        ToggleGroup rangeGroup = new ToggleGroup();
+        rangeFixedRbtn.setToggleGroup(rangeGroup);
+        rangeNullRbtn.setToggleGroup(rangeGroup);
+        rangeFloatingRbtn.setToggleGroup(rangeGroup);
+
+        ToggleGroup connGroup = new ToggleGroup();
+        connectivity4Rbtn.setToggleGroup(connGroup);
+        connectivity8Rbtn.setToggleGroup(connGroup);
     }
 
     public void initStyleSheet() {
