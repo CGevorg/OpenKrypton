@@ -1,5 +1,6 @@
 package com.krypton.app;
 
+import javafx.embed.swing.SwingFXUtils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -13,9 +14,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
 public class ImageProcessor {
-    static {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
 
     public Mat addition(Mat input, int elementSize, int elementShape) {
         Mat outputImage = new Mat(input.rows(),input.cols(),CvType.CV_8UC1);
@@ -100,10 +98,19 @@ public class ImageProcessor {
         return image;
     }
 
-    public static Mat bufferedImageToMat(BufferedImage in) {
+    //dont work
+    public static Mat bufferedImage2Mat(BufferedImage in) {
         byte[] data = ((DataBufferByte) in.getRaster().getDataBuffer()).getData();
         Mat mat = new Mat(in.getHeight(), in.getWidth(), CvType.CV_8UC3);
         mat.put(0, 0, data);
         return mat;
+    }
+
+    /**
+     * don't support yet
+     */
+    public static Mat image2Mat( javafx.scene.image.Image image) {
+        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+        return bufferedImage2Mat(bImage);
     }
 }

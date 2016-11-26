@@ -1,15 +1,17 @@
 package com.krypton.app;
 
 import org.junit.Test;
+import org.opencv.core.Core;
 
 import java.awt.Dimension;
 
 
 public class MorphologyTest {
-    static final int SLEEP_DURATION = 7000000;
+    private static final int SLEEP_DURATION = 7000000;
 
     @Test
     public void UI() {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         Morphology m = new Morphology();
         m.setSize(new Dimension(400, 300));
         m.setMinimumSize(new Dimension(400, 300));

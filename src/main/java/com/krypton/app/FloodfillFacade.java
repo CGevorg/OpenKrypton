@@ -20,13 +20,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+
+import java.io.File;
 
 public class FloodfillFacade extends Application {
 
-
     private static final int DEFAULT_HBOX_SPACING = 5;
     private static final int DEFAULT_WINDOW_WIDTH = 900;
-    private static final int DEFAULT_WINDOW_HEIGHT = 700;
+    private static final int DEFAULT_WINDOW_HEIGHT = 900;
     private static final Insets DEFAULT_SPACING_MAJOR = new Insets(0, 100, 0, 0);
 
     private ToggleGroup modeGroup = new ToggleGroup();
@@ -52,10 +56,12 @@ public class FloodfillFacade extends Application {
     private Button openFileBtn = new Button("Open file");
 
 
-    private Button resetBtn = new Button("Reset");
+    private Button pushBtn = new Button("Push");
 
     private ImageView originalImgLbl = new ImageView();
     private ImageView maskImgLbl = new ImageView();
+
+    private Mat currentMat = null;
 
 
     @Override
@@ -127,11 +133,15 @@ public class FloodfillFacade extends Application {
         upperThBox.getChildren().addAll(upperThLbl, upperThSlider);
 
 
+        HBox btnBox = new HBox(DEFAULT_HBOX_SPACING);
+        btnBox.setAlignment(Pos.CENTER);
+        btnBox.getChildren().addAll(openFileBtn, pushBtn);
+
         HBox imageBox = new HBox();
         imageBox.setAlignment(Pos.BOTTOM_CENTER);
         imageBox.getChildren().addAll(originalImgLbl, maskImgLbl);
 
-        panel.getChildren().addAll(modeBox, maskBox, rangeBox, connectivityBox, lowerThBox, upperThBox, openFileBtn, imageBox);
+        panel.getChildren().addAll(modeBox, maskBox, rangeBox, connectivityBox, lowerThBox, upperThBox, btnBox, imageBox);
 
     }
 
@@ -162,13 +172,21 @@ public class FloodfillFacade extends Application {
                 new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
-                        Image image = FileManager.openFile();
+                        File imageFile = FileManager.openFile();
+                        Image image = FileManager.getImagefromFile(imageFile);
                         if (null != image) {
                             originalImgLbl.setImage(image);
+                            currentMat = Imgcodecs.imread(imageFile.getPath());
                             maskImgLbl.setImage(image);
                         }
                     }
                 });
+        pushBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("Push");
+            }
+        });
     }
 
 
@@ -188,6 +206,7 @@ public class FloodfillFacade extends Application {
     }
 
     public static void main(String[] args) {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         launch(args);
     }
 }

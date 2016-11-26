@@ -10,16 +10,19 @@ import java.io.File;
 
 public class FileManager {
 
-    public static Image openFile() {
+    public static File openFile() {
         Stage stage = new Stage();
         stage.initStyle(StageStyle.DECORATED);
         FileChooser fileChooser = new FileChooser();
         File defaultDirectory = new File(System.getProperty("user.dir") + "/resources");
         fileChooser.setInitialDirectory(defaultDirectory);
         fileChooser.setTitle("Open Resource File");
-        File file = fileChooser.showOpenDialog(stage);
+        return  fileChooser.showOpenDialog(stage);
+    }
+
+    public static Image getImagefromFile(File file) {
         Image image = null;
-        if(null != file) {
+        if (null != file) {
             image = new Image(file.toURI().toString());
         }
         return image;
