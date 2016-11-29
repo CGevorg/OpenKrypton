@@ -5,6 +5,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -16,17 +17,12 @@ import java.awt.image.DataBufferByte;
 public class ImageProcessor {
 
     public Mat addition(Mat input, int elementSize, int elementShape) {
-        Mat outputImage = new Mat(input.rows(),input.cols(),CvType.CV_8UC1);
-
-        //@TODO
-        /*Mat m = dilate(input,elementSize,elementShape);
-        Core.add(input, m, outputImage);
-        */return outputImage;
+        return null;
     }
 
     public Mat boundaryExtraction(Mat input, int elementSize, int elementShape) {
-        Mat outputImage = new Mat(input.rows(),input.cols(),CvType.CV_8UC1);
-        Mat m = dilate(input,elementSize,elementShape);
+        Mat outputImage = new Mat(input.rows(), input.cols(), CvType.CV_8UC1);
+        Mat m = dilate(input, elementSize, elementShape);
         Core.subtract(m, input, outputImage);
         return outputImage;
     }
@@ -68,14 +64,6 @@ public class ImageProcessor {
         return outputImage;
     }
 
-    public Mat HITMISS(Mat input, int elementSize, int elementShape) {
-        Mat outputImage = new Mat();
-        Mat element = getKernelFromShape(5, 1);
-        Imgproc.morphologyEx(input, outputImage, Imgproc.MORPH_HITMISS,
-                element);
-        return outputImage;
-    }
-
     private Mat getKernelFromShape(int elementSize, int elementShape) {
         return Imgproc.getStructuringElement(elementShape, new
                 Size(elementSize * 2 + 1, elementSize * 2 + 1), new Point(elementSize,
@@ -109,7 +97,7 @@ public class ImageProcessor {
     /**
      * don't support yet
      */
-    public static Mat image2Mat( javafx.scene.image.Image image) {
+    public static Mat image2Mat(javafx.scene.image.Image image) {
         BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
         return bufferedImage2Mat(bImage);
     }

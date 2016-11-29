@@ -1,6 +1,7 @@
-package com.krypton.app;
+package com.krypton.app.floodfill;
 
 
+import com.krypton.app.FileManager;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,7 +27,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 
-public class FloodfillFacade extends Application {
+public class FloodfillGui extends Application {
 
     private static final int DEFAULT_HBOX_SPACING = 5;
     private static final int DEFAULT_WINDOW_WIDTH = 900;
@@ -56,12 +57,15 @@ public class FloodfillFacade extends Application {
     private Button openFileBtn = new Button("Open file");
 
 
-    private Button pushBtn = new Button("Push");
+    private Button resetBtn = new Button("Reset");
 
-    private ImageView originalImgLbl = new ImageView();
+    private ImageView imageLbl = new ImageView();
     private ImageView maskImgLbl = new ImageView();
 
-    private Mat currentMat = null;
+    private Mat originalImageMat;
+    private Mat imageMat;
+    private Mat grayImageMat = new Mat();
+    private Mat maskMat = new Mat();
 
 
     @Override
@@ -135,11 +139,11 @@ public class FloodfillFacade extends Application {
 
         HBox btnBox = new HBox(DEFAULT_HBOX_SPACING);
         btnBox.setAlignment(Pos.CENTER);
-        btnBox.getChildren().addAll(openFileBtn, pushBtn);
+        btnBox.getChildren().addAll(openFileBtn, resetBtn);
 
         HBox imageBox = new HBox();
         imageBox.setAlignment(Pos.BOTTOM_CENTER);
-        imageBox.getChildren().addAll(originalImgLbl, maskImgLbl);
+        imageBox.getChildren().addAll(imageLbl, maskImgLbl);
 
         panel.getChildren().addAll(modeBox, maskBox, rangeBox, connectivityBox, lowerThBox, upperThBox, btnBox, imageBox);
 
@@ -164,7 +168,6 @@ public class FloodfillFacade extends Application {
         rangeFixedRbtn.setSelected(true);
         connectivity4Rbtn.setSelected(true);
 
-
     }
 
     private void initListeners() {
@@ -175,16 +178,43 @@ public class FloodfillFacade extends Application {
                         File imageFile = FileManager.openFile();
                         Image image = FileManager.getImagefromFile(imageFile);
                         if (null != image) {
-                            originalImgLbl.setImage(image);
-                            currentMat = Imgcodecs.imread(imageFile.getPath());
+                            imageLbl.setImage(image);
+                            imageMat = Imgcodecs.imread(imageFile.getPath());
                             maskImgLbl.setImage(image);
                         }
                     }
                 });
-        pushBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+        resetBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("Push");
+
+
+            }
+        });
+
+        imageLbl.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                FloodFillFacade facade = new FloodFillFacade();
+                facade.setColored(modeColorRbtn.isSelected());
+                facade.setMasked(maskOnRbtn.isSelected());
+
+                if(rangeNullRbtn.isSelected()) {
+                    facade.setRange(FloodFillFacade.NULL_RANGE);
+                }
+                else if(rangeFixedRbtn.isSelected()) {
+                    facade.setRange(FloodFillFacade.FIXED_RANGE);
+                }
+                else if(rangeFloatingRbtn.isSelected()) {
+                    facade.setRange(FloodFillFacade.FLOATING_RANGE);
+                }
+                facade.setConnectivity(connectivity4Rbtn.isSelected() ? 4 : 8 );
+                facade.setLowerDiff((int)lowerThSlider.getValue());
+                facade.setUpperDiff((int)upperThSlider.getValue());
+
+
+                facade.fill(imageMat,maskMat,(int)event.getX(),(int)event.getY());
+                System.out.println("asd");
             }
         });
     }
@@ -203,6 +233,14 @@ public class FloodfillFacade extends Application {
         upperThSlider.setPrefWidth(400);
         upperThSlider.setShowTickMarks(true);
         upperThSlider.setShowTickLabels(true);
+    }
+
+    private void resetImage() {
+
+    }
+
+    private void updateView() {
+
     }
 
     public static void main(String[] args) {

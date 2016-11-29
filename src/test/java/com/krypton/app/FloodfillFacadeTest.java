@@ -1,14 +1,14 @@
 package com.krypton.app;
 
+import com.krypton.app.floodfill.FloodfillGui;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.junit.Test;
-import org.opencv.core.Core;
 
 public class FloodfillFacadeTest {
     @Test
     public void runUi() {
-        FloodfillFacade floodfillFacade = new FloodfillFacade();
+        FloodfillGui floodfillFacade = new FloodfillGui();
         try {
             Stage stage = new Stage();
             stage.initStyle(StageStyle.DECORATED);
