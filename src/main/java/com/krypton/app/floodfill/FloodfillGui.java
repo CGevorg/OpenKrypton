@@ -22,7 +22,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
@@ -168,6 +171,8 @@ public class FloodfillGui extends Application {
         rangeFixedRbtn.setSelected(true);
         connectivity4Rbtn.setSelected(true);
 
+        lowerThSlider.setValue(20);
+        upperThSlider.setValue(20);
     }
 
     private void initListeners() {
@@ -180,6 +185,9 @@ public class FloodfillGui extends Application {
                         if (null != image) {
                             imageLbl.setImage(image);
                             imageMat = Imgcodecs.imread(imageFile.getPath());
+                            //maskMat = imageMat.clone();
+                            maskMat.create(new Size(imageMat.cols()+2, imageMat.rows()+2), CvType.CV_8UC1);
+                            maskMat.setTo(new Scalar(0));
                             maskImgLbl.setImage(image);
                         }
                     }
@@ -187,8 +195,10 @@ public class FloodfillGui extends Application {
         resetBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
-
+                imageMat = originalImageMat.clone();
+                maskMat.setTo(new Scalar(0));
+                imageLbl.setImage(FloodFillFacade.mat2Image(imageMat));
+                maskImgLbl.setImage(FloodFillFacade.mat2Image(maskMat));
             }
         });
 
@@ -212,9 +222,10 @@ public class FloodfillGui extends Application {
                 facade.setLowerDiff((int)lowerThSlider.getValue());
                 facade.setUpperDiff((int)upperThSlider.getValue());
 
-
                 facade.fill(imageMat,maskMat,(int)event.getX(),(int)event.getY());
-                System.out.println("asd");
+                imageLbl.setImage(FloodFillFacade.mat2Image(imageMat));
+                maskImgLbl.setImage(FloodFillFacade.mat2Image(maskMat));
+                maskMat.setTo(new Scalar(0));
             }
         });
     }

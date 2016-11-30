@@ -1,7 +1,11 @@
 package com.krypton.app.floodfill;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.util.Random;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -116,5 +120,18 @@ public class FloodFillFacade {
     }
 
 
-
+    public static Image mat2Image(Mat frame)
+    {
+        int type = BufferedImage.TYPE_BYTE_GRAY;
+        if ( frame.channels() > 1 ) {
+            type = BufferedImage.TYPE_3BYTE_BGR;
+        }
+        int bufferSize = frame.channels()*frame.cols()*frame.rows();
+        byte [] b = new byte[bufferSize];
+        frame.get(0,0,b); // get all the pixels
+        BufferedImage image = new BufferedImage(frame.cols(),frame.rows(), type);
+        final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        System.arraycopy(b, 0, targetPixels, 0, b.length);
+        return SwingFXUtils.toFXImage(image,null);
+    }
 }
