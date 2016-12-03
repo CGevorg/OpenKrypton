@@ -185,7 +185,7 @@ public class FloodfillGui extends Application {
                         if (null != image) {
                             imageLbl.setImage(image);
                             imageMat = Imgcodecs.imread(imageFile.getPath());
-                            //maskMat = imageMat.clone();
+                            originalImageMat = imageMat.clone();
                             maskMat.create(new Size(imageMat.cols()+2, imageMat.rows()+2), CvType.CV_8UC1);
                             maskMat.setTo(new Scalar(0));
                             maskImgLbl.setImage(image);
@@ -244,14 +244,6 @@ public class FloodfillGui extends Application {
         upperThSlider.setPrefWidth(400);
         upperThSlider.setShowTickMarks(true);
         upperThSlider.setShowTickLabels(true);
-    }
-
-    private void resetImage() {
-
-    }
-
-    private void updateView() {
-
     }
 
     public static void main(String[] args) {
