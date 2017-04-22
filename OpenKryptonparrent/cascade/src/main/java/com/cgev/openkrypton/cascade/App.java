@@ -61,18 +61,20 @@ public class App
         VideoCapture capture = new VideoCapture(0);
         capture.set(Videoio.CV_CAP_PROP_FRAME_WIDTH,640);
         capture.set(Videoio.CV_CAP_PROP_FRAME_HEIGHT,480);
+        String filePath = "src/main/resources/images/group_face.jpg";
+        Mat newImage = Imgcodecs.imread(filePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
-        if( capture.isOpened()){
+        /*if( capture.isOpened()){
             while (true){
                 capture.read(webcamMatImage);
                 if( !webcamMatImage.empty() ){
-                    detectAndDrawFace(webcamMatImage);
-                    tempImage= imageProcessor.toBufferedImage(webcamMatImage);
+        */            detectAndDrawFace(newImage);
+                    tempImage= imageProcessor.toBufferedImage(newImage);
 
                     ImageIcon imageIcon = new ImageIcon(tempImage, "Captured video");
                     imageLabel.setIcon(imageIcon);
                     //panel.pack();  //this will resize the window to fit the image
-                }
+                /*}
                 else{
                     System.out.println(" -- Frame not captured -- Break!");
                     break;
@@ -81,7 +83,7 @@ public class App
         }
         else{
             System.out.println("Couldn't open capture.");
-        }
+        }*/
 
     }
 
