@@ -32,6 +32,9 @@ public class MainClass {
         panels.put(pair.getKey(), pair.getValue());
         pair = com.cgev.openkrypton.cascade.App.create();
         panels.put(pair.getKey(), pair.getValue());
+        pair = com.cgev.openkrypton.cascadeVideo.App.create();
+        panels.put(pair.getKey(), pair.getValue());
+
 
 
         GUI.create("OpenKrypton", panels);

@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>com.cgev.openkrypton</groupId>
-            <artifactId>cascade</artifactId>
+            <artifactId>cascadeVideo</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

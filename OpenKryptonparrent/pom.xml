@@ -18,6 +18,7 @@
         <module>kernels</module>
         <module>morphologyMy</module>
         <module>cascade</module>
+        <module>cascadeVideo</module>
     </modules>
 
     <build>
