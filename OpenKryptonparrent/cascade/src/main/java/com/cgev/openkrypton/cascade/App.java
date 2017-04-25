@@ -61,7 +61,7 @@ public class App
         VideoCapture capture = new VideoCapture(0);
         capture.set(Videoio.CV_CAP_PROP_FRAME_WIDTH,640);
         capture.set(Videoio.CV_CAP_PROP_FRAME_HEIGHT,480);
-        String filePath = "src/main/resources/images/group_face.jpg";
+        String filePath = "src/main/resources/images/group.png";
         Mat newImage = Imgcodecs.imread(filePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
         /*if( capture.isOpened()){

@@ -17,6 +17,7 @@
         <module>threshold</module>
         <module>kernels</module>
         <module>morphologyMy</module>
+        <module>cascade</module>
     </modules>
 
     <build>
