@@ -1,11 +1,11 @@
 # OpenKrypton
-Pattern recognition application
+Pattern recognition application.
 
-Java Project who describe Object detection algorithms. Generally this project will use OpenCV framework.
+Java Project which describe object detection algorithms. Generally this project will use OpenCV framework.
 
-if you use some idea for working in project you will add in your VM options your openCV library path like 
+If you are using some idea for working in project you will add in your VM options your openCV library path like 
 -Djava.library.path="/home/cgev/workspace/frameworks/opencv/build/lib"
 You must add libs/opencv***.jar file to your project
 Intellijy idea Project Structure -> add Library
 
-this project will write using Oracle Java8
+This project was written using Oracle Java SE 8.
