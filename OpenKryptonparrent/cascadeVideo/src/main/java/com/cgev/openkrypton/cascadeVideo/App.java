@@ -64,6 +64,7 @@ public class App {
                         capture.read(webcamMatImage);
                         if (!webcamMatImage.empty()) {
                             detectAndDrawFace(webcamMatImage);
+                            //detectPeople(webcamMatImage)
                             tempImage = imageProcessor.toBufferedImage(webcamMatImage);
 
                             ImageIcon imageIcon = new ImageIcon(tempImage, "Captured video");
