@@ -2,16 +2,12 @@ package com.cgev.openkrypton.cascadeVideo;
 
 import com.cgev.openkrypton.cascadeVideo.utils.ImageProcessor;
 import javafx.util.Pair;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfRect;
+import org.opencv.core.*;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.objdetect.HOGDescriptor;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
@@ -94,6 +90,29 @@ public class App {
         }
     }
 
+    /**
+     * Detect people using Pedestrian detection algorithm
+     * @param mat
+     */
+    private void detectPeople(Mat mat) {
+        Mat grayMat = new Mat();
+
+        //Converting the image to grayscale
+        Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_BGR2GRAY);
+
+        HOGDescriptor hog = new HOGDescriptor();
+        hog.setSVMDetector(HOGDescriptor.getDefaultPeopleDetector());
+
+        MatOfRect faces = new MatOfRect();
+        MatOfDouble weights = new MatOfDouble();
+
+        hog.detectMultiScale(grayMat, faces, weights);
+        Rect[] facesArray = faces.toArray();
+        for (int i = 0; i < facesArray.length; i++)
+            Imgproc.rectangle(mat, facesArray[i].tl(), facesArray[i].br(), new Scalar(100), 3);
+
+        //Converting Mat back to Bitmap
+    }
 
     public static Pair<String, JPanel> create() throws Exception {
         App app = new App();
